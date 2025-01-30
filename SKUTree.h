@@ -1,19 +1,20 @@
 #include <stdbool.h>
 
-typedef struct{
+struct SKUNodes{
     int depth;
-    int maxChildren;
-    SKUNode **children;
-}SKUNode;
+    char *SKUID;
+    struct SKUNodes **children;
+};
+typedef struct SKUNodes SKUNode;
 
 typedef struct{
     int numInternalLevels;
-    int **maxChildren;
+    int *maxChildren;
     SKUNode *root;
-} SKUTree;
+}SKUTree;
 
-bool addSKU(SKUTree *root, const char *SkUPath);
+bool addSKU(SKUTree *tree, const char *SKUPath);
 
-SKUNode* findSKU(SKUTree *root, const char *SKUPath);
+SKUNode* findSKU(SKUTree *tree, const char *SKUPath);
 
-void countNumOfSKUsInSKUChart(SKUNode *node, unsigned int *count);
+int countNumOfSKUsInSKUChart(SKUTree *tree, SKUNode *node);
