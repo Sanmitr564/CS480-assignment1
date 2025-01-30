@@ -135,7 +135,33 @@ SKUNode* findSKU(SKUTree *tree, const char *SKUPath){
 int countNumOfSKUsInSKUChart(SKUTree *tree, SKUNode *node){
     int count = 0;
     if(node == NULL){
-        return count;
+        return 0;
     }
-    return 0;
+
+    int count = 0;
+    int index = 0;
+    SKUNode *expandedNodes[tree->numInternalLevels + 1];
+    int expandedBranches[tree->numInternalLevels + 1];
+    expandedNodes[0] = node;
+    expandedBranches[0] = 0;
+
+    while(index > -1){
+        SKUNode *currnode = expandedNodes[index];
+        if(currnode->depth >= tree->numInternalLevels || expandedBranches[index] >= tree->maxChildren[currnode->depth]){
+            count++;
+            index--;
+            expandedBranches[index]++;
+            continue;
+    }
+
+        for(;expandedBranches[index] < tree->maxChildren[currnode->depth]; expandedBranches[index]++){
+            if(currnode->children[expandedBranches[index]] != NULL){     
+                expandedNodes[index + 1] = currnode->children[expandedBranches[index]];
+                index++;
+                expandedBranches[index] = 0;
+                break;
+            }
+        }
+    }
+    return count;
 }
