@@ -54,57 +54,44 @@ void getPath(char *path, int maxLength, const char *SKUPath, int *length){
 bool addSKU(SKUTree *tree, const char *SKUPath){
 
     bool addedNode = false;
+    const int maxStrLen = 50;
+    int length = 0;
+    int index = 0;
+    char path[maxStrLen];
 
-    if(SKUPath[0] != 's' || SKUPath[1] != '_'){
+    getPath(path, maxStrLen, SKUPath, &length);
+    if(length == 0){
         return addedNode;
     }
+    
     if(tree->root == NULL){
         SKUNode *root = newSKUNode(0, tree->maxChildren[0], SKUPath);
 
         tree->root = root;
         addedNode = true;
     }
+    index++;
 
     SKUNode currNode = *(tree->root);
-    bool expectDigit = true;
-    int index = 2;
-    while(true){
-        if(currNode.depth >= tree->numInternalLevels){
-            break;
-        }
-        char nextChar = SKUPath[index];
-        if(!expectDigit){
-            if(nextChar != '_'){
-                break;
-            }else{
-                index++;
-                expectDigit = true;
-                continue;
-            }
-        }
+    while(currNode.depth < tree->numInternalLevels && index < length){
 
-        if(!isdigit(nextChar)){
-            break;
-        }
-
-        int path = nextChar - '0';
+        int branch = path[index] - '0';
         
-        if(path >= tree->maxChildren[currNode.depth]){
+        if(branch >= tree->maxChildren[currNode.depth]){
             break;
         }
 
-        if(currNode.children[path] == NULL){
+        if(currNode.children[branch] == NULL){
             int maxChildren = 0;
             if(currNode.depth + 1 < tree->numInternalLevels){
                 maxChildren = tree->maxChildren[currNode.depth + 1];
             }
-            currNode.children[path] = newSKUNode(currNode.depth + 1, maxChildren, SKUPath);
+            currNode.children[branch] = newSKUNode(currNode.depth + 1, maxChildren, SKUPath);
             addedNode = true;
         }
 
-        currNode = *currNode.children[path];
+        currNode = *currNode.children[branch];
         index++;
-        expectDigit = false;
     }
     return addedNode;
 }
