@@ -96,8 +96,40 @@ bool addSKU(SKUTree *tree, const char *SKUPath){
     return addedNode;
 }
 
-SKUNode* findSKU(SKUTree *root, const char *SKUPath){
+SKUNode* findSKU(SKUTree *tree, const char *SKUPath){
+    const int maxStrLen = 50;
+    int length = 0;
+    int index = 0;
+    char path[maxStrLen];
+
+    getPath(path, maxStrLen, SKUPath, &length);
+    SKUNode *node = NULL;
+
+    if(length == 0){
+        return node;
+    }
+
+    if(tree->root == NULL){
+        return node;
+    }
+    index++;
+
+    SKUNode *currNode = tree->root;
+    while(index < length){
+        int branch = path[index] - '0';
+        
+        if(branch >= tree->maxChildren[currNode->depth]){
+            return NULL;
+        }
+        if(currNode->children[branch] == NULL){
     return NULL;
+}
+
+        currNode = currNode->children[branch];
+        index++;
+    }
+
+    return currNode;
 }
 
 int countNumOfSKUsInSKUChart(SKUTree *tree, SKUNode *node){
