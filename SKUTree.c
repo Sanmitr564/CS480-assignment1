@@ -122,8 +122,8 @@ SKUNode* findSKU(SKUTree *tree, const char *SKUPath){
             return NULL;
         }
         if(currNode->children[branch] == NULL){
-    return NULL;
-}
+            return NULL;
+        }
 
         currNode = currNode->children[branch];
         index++;
@@ -133,7 +133,6 @@ SKUNode* findSKU(SKUTree *tree, const char *SKUPath){
 }
 
 int countNumOfSKUsInSKUChart(SKUTree *tree, SKUNode *node){
-    int count = 0;
     if(node == NULL){
         return 0;
     }
@@ -150,13 +149,13 @@ int countNumOfSKUsInSKUChart(SKUTree *tree, SKUNode *node){
         if(currnode->depth >= tree->numInternalLevels || expandedBranches[index] >= tree->maxChildren[currnode->depth]){
             count++;
             index--;
-            expandedBranches[index]++;
             continue;
-    }
+        }
 
         for(;expandedBranches[index] < tree->maxChildren[currnode->depth]; expandedBranches[index]++){
             if(currnode->children[expandedBranches[index]] != NULL){     
                 expandedNodes[index + 1] = currnode->children[expandedBranches[index]];
+                expandedBranches[index]++;
                 index++;
                 expandedBranches[index] = 0;
                 break;
