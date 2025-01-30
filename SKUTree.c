@@ -19,10 +19,36 @@ SKUNode* newSKUNode(int depth, int maxChildren, const char *SKUPath){
     return newNode;
 }
 
-char* getPath(const char *SKUPath, int *length){
-    bool expectDigit = true;
+void getPath(char *path, int maxLength, const char *SKUPath, int *length){
     int index = 0;
-    while(true){}
+    *length = 0;
+
+    if(SKUPath[index] != 's'){
+        return;
+    }
+    path[index] = 's';
+    (*length)++;
+
+    index++;
+    if(SKUPath[index] != '_'){
+        return;
+    }
+    index++;
+
+    while(*length < maxLength){
+        if(!isdigit(SKUPath[index])){
+            return;
+        }
+        if(isdigit(SKUPath[index + 1])){
+            return;
+        }
+        path[*length] = SKUPath[index];
+        (*length)++;
+        if(SKUPath[index + 1] != '_'){
+            return;
+        }
+        index += 2;
+    }
 }
 
 bool addSKU(SKUTree *tree, const char *SKUPath){
@@ -92,4 +118,5 @@ int countNumOfSKUsInSKUChart(SKUTree *tree, SKUNode *node){
     if(node == NULL){
         return count;
     }
+    return 0;
 }
